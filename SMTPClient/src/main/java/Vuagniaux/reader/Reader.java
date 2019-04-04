@@ -60,6 +60,13 @@ public class Reader {
     }
 
     /**
+     * @param fileName le nom de fichier a changer
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
      * Lit le fichier en utilisant un buffer.
      * La lecture a l'aide d'un buffer est inspiree de ce lien :
      * https://www.baeldung.com/java-csv-file-array
