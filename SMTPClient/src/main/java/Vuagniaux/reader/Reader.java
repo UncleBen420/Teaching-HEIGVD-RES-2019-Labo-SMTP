@@ -1,4 +1,4 @@
-package parser.reader;
+package Vuagniaux.reader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
