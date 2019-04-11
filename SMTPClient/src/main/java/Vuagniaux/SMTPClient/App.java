@@ -3,23 +3,55 @@ package Vuagniaux.SMTPClient;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mailparser.MailParser;
+import prank.PrankGenerator;
+import properties.PropertiesClientSmtp;
+
 public class App {
 	final static Logger LOG = Logger.getLogger(App.class.getName());
+	static PropertiesClientSmtp properties;
 
 	Socket clientSocket;
+	
 
 	final static int BUFFER_SIZE = 1024;
+	
+	public App() {
+		clientSocket = null;
+		properties = new PropertiesClientSmtp("conf.properties");
+	}
+	
+	public static void main(String[] args) {
+		
 
-	public void sendmail(String serverIP, int serverPort, Mail mail) {
+		App app = new App();
+		
+		PrankGenerator prankGenerator = new PrankGenerator(properties);
+		MailParser parser = new MailParser(properties);
+		
+		prankGenerator.setGroups(parser.parsePerson("victims.txt"));
+		prankGenerator.setPranks(parser.parsePrank("prank.txt"));
+		
+		List<Mail> mails = prankGenerator.generatePrank();
+		
+		for(Mail mail : mails) {
+			app.sendmail(mail);			
+		}
+		
+		
+	}
+
+	public void sendmail(Mail mail) {
 		Socket clientSocket = null;
 		PrintWriter out = null;
 		BufferedReader in = null;
 
 		try {
-			clientSocket = new Socket(InetAddress.getByName(serverIP), serverPort);
+			clientSocket = new Socket(InetAddress.getByName(properties.getAddress()), properties.getPort());
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -36,21 +68,6 @@ public class App {
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, null, e);
 		}
-	}
-
-	public static void main(String[] args) {
-
-		Mail mail = new Mail();
-		mail.setFrom("test@test.ch");
-		mail.setTo("haha@haha.ch");
-		mail.setFromInMail("test@test.ch");
-		mail.setToInMail("haha@haha.ch");
-		mail.setSubject("test");
-		mail.setMessage("Prank bro");
-
-		App app = new App();
-
-		app.sendmail("localhost", 25, mail);
 	}
 
 	public int readResponse(BufferedReader in) {
@@ -76,7 +93,7 @@ public class App {
 
 	public int checkCode(String line) {
 
-		String[] codeContinue = {"221", "220", "250", "421", "500", "501", "502", "334", "354", "235", "530" };
+		String[] codeContinue = {"221", "220", "250", "421", "500", "501", "502", "334", "354", "235", "530", "550" };
 
 		for (String s : codeContinue) {
 
@@ -186,9 +203,9 @@ public class App {
 		
 		sendMessage(out,"AUTH LOGIN");
 		if(readResponse(in) == 334) {
-			sendMessage(out,"NWVjZTQ2MTE2NDlhODU=");
+			sendMessage(out,properties.getLogin());
 			if(readResponse(in) == 334) {
-				sendMessage(out,"OTg4YjNhMmQ0ZWYwNmI=");
+				sendMessage(out,properties.getPassword());
 				if(readResponse(in) == 235) {
 					System.out.println("Auth is successful");
 				}else {
@@ -220,6 +237,10 @@ public class App {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public PropertiesClientSmtp getProperties() {
+		return properties;
 	}
 
 }

@@ -56,7 +56,7 @@ public class Reader {
         this.delimiter = delimiter;
         this.fileName = fileName;
         this.readFirstLine = readFirstLine;
-        readData = new ArrayList<>();
+        readData = new ArrayList<List<String>>();
     }
 
     /**
@@ -104,4 +104,75 @@ public class Reader {
 
         return this.readData;
     }
+    
+    
+    public List<String> readLine() {
+    	
+    	List<String> temp = new ArrayList<String>();
+    	
+        try {
+            String line;
+            
+
+            // On ouvre le fichier
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // String[] pour pouvoir utiliser split
+            String[] splittedLine;
+
+            /*
+             * On saute la premiere ligne si on ne la veut pas
+             * (par exemple si on a un fichier avec des entetes de colonnes)
+             */
+            if(!readFirstLine) {
+                reader.readLine();
+            }
+
+            // On lit une ligne a la fois, on la split, on l'ajoute aux autres lignes
+            while((line = reader.readLine()) != null) {
+                temp.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return temp;
+    }
+    
+    public String fileReading() {
+    	String line = "";
+        try {
+            
+
+            int charac;
+            
+            // On ouvre le fichier
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+            // String[] pour pouvoir utiliser split
+            String[] splittedLine;
+
+            /*
+             * On saute la premiere ligne si on ne la veut pas
+             * (par exemple si on a un fichier avec des entetes de colonnes)
+             */
+            if(!readFirstLine) {
+                reader.readLine();
+            }
+
+            // On lit une ligne a la fois, on la split, on l'ajoute aux autres lignes
+            while((charac = reader.read()) >= 0) {
+                
+            	line += (char)charac;
+                
+            }
+            
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return line;
+    }
+    
 }

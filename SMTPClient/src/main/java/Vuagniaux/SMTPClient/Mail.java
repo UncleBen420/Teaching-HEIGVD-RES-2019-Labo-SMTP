@@ -47,6 +47,11 @@ public class Mail {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	@Override
+	public String toString() {
+		return "Mail [from=" + from + ", to=" + to + ", fromInMail=" + fromInMail + ", toInMail=" + toInMail + ", cc="
+				+ cc + ", subject=" + subject + ", message=" + message + "]";
+	}
 	
 
 }

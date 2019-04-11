@@ -33,19 +33,8 @@ public class AppTest
      */
     public void testApp()
     {
-    	
-    	App temp = new App();
-    	Mail mail = new Mail();
-    	
-    	mail.setFrom("caca@outlook.com");
-    	mail.setTo("remy.vuagniaux@heig-vd.ch");
-    	mail.setFromInMail("cacaman");
-    	mail.setToInMail("remy.vuagniaux@heig-vd.ch");
-    	mail.setCc("gaetan.bacso@heig-vd.ch");
-    	mail.setSubject("test");
-    	mail.setMessage("coucou");
-    	
-    	temp.sendmail("localhost", 25000, mail);
+
+    	App.main(null);
     	
         assertTrue( true );
     }
