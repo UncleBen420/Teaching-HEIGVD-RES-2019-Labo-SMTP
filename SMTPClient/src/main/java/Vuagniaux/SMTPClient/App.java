@@ -23,35 +23,15 @@ public class App {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-			readResponse(in);
+			if(readResponse(in) != 220) {
+				throw new IOException("cannot connect");
+			}
 
 			sendMessage(out,"EHLO Prank");
-			readResponse(in);
-
-			// On envoye une requete
 			
-			/*sendMessage(out,"AUTH LOGIN");
-			readResponse(in);
+			dialog(readResponse(in), out, in, mail);
 			
-			sendMessage(out,"NWVjZTQ2MTE2NDlhODU=");
-			readResponse(in);
 			
-			sendMessage(out,"OTg4YjNhMmQ0ZWYwNmI=");
-			readResponse(in);*/
-
-
-			sendMessage(out,"MAIL FROM: " + mail.getFrom());
-			readResponse(in);
-
-			sendMessage(out,"RCPT TO: " + mail.getTo());
-			readResponse(in);
-
-			sendMessage(out,"DATA");
-			readResponse(in);
-			
-			sendMessage(out,"From:" + mail.getFromInMail() + "\nTo:" + mail.getToInMail() + "\nCc:" + mail.getCc() + "\nSubject:"
-					+ mail.getToInMail() + "\n\n" + mail.getMessage() + "\r\n.\r\n");
-			readResponse(in);
 			
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, null, e);
@@ -73,26 +53,30 @@ public class App {
 		app.sendmail("localhost", 25, mail);
 	}
 
-	public void readResponse(BufferedReader in) {
+	public int readResponse(BufferedReader in) {
 		String c;
+		int temp = -1;
 		try {
-			while ((c = in.readLine()) != null && checkCode(c) < 0) {
+			while ((c = in.readLine()) != null && (temp = checkCode(c)) < 0) {
 
 				System.out.print(c);
 			}
 
 			System.out.println(c);
+			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return temp;
 
 	}
 
 	public int checkCode(String line) {
 
-		String[] codeContinue = { "220", "250", "421", "500", "501", "334", "354", "235" };
+		String[] codeContinue = {"221", "220", "250", "421", "500", "501", "502", "334", "354", "235", "530" };
 
 		for (String s : codeContinue) {
 
@@ -101,10 +85,128 @@ public class App {
 			}
 
 		}
+		
+		
 
 		return -1;
 
 	}
+	
+	public void dialog(int code, PrintWriter out, BufferedReader in, Mail mail) throws IOException {
+		
+		int code2 = 0;
+		
+		switch(code) {
+			
+		case 220:
+			System.out.println("Connection Ok");
+			sendMessage(out,"EHLO Prank");
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}
+			
+			
+			
+			break;
+			
+		case 530:
+			System.out.println("Server want a autentification");
+			auth(out, in);	
+	
+		case 250:
+			
+			System.out.println("OK");
+			
+			sendMessage(out,"MAIL FROM: " + mail.getFrom());
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}
+			
+			sendMessage(out,"RCPT TO: " + mail.getTo());
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}
+			
+			sendMessage(out,"DATA");
+			code2 = readResponse(in);
+			break;
+			
+		case 501:
+			
+			sendMessage(out,"MAIL FROM: <" + mail.getFrom() + ">");
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}	
+			
+			sendMessage(out,"RCPT TO: <" + mail.getTo() + ">");
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}
+			
+			sendMessage(out,"DATA");
+			code2 = readResponse(in);
+			break;
+			
+		case 354:
+			
+			sendMessage(out, "From:" + mail.getFromInMail() + 
+							 "\nTo:" + mail.getToInMail()   + 
+							 "\nCc:" + mail.getCc()         + 
+							 "\nSubject:" + mail.getSubject() + 
+							 "\n\n" + mail.getMessage() + "\r\n.\r\n");
+			
+			if((code2 = readResponse(in)) != 250) {
+				dialog(code2, out, in, mail);
+				return;
+			}
+			
+			sendMessage(out,"quit");
+			System.out.println("Message send successfully");			
+			return;
+			
+		case 221:
+			return;
+			
+		default:
+			throw new IOException("unespected error");
+			
+		}
+		
+		
+		dialog(code2, out, in, mail);
+		
+	}
+				
+	public void auth(PrintWriter out, BufferedReader in) throws IOException {
+		
+		sendMessage(out,"AUTH LOGIN");
+		if(readResponse(in) == 334) {
+			sendMessage(out,"NWVjZTQ2MTE2NDlhODU=");
+			if(readResponse(in) == 334) {
+				sendMessage(out,"OTg4YjNhMmQ0ZWYwNmI=");
+				if(readResponse(in) == 235) {
+					System.out.println("Auth is successful");
+				}else {
+					throw new IOException("Autentification fail");
+				}
+				
+			}else {
+				throw new IOException("Autentification fail");
+			}
+			
+		}else {
+			throw new IOException("Autentification fail");
+		}
+		
+	}
+		
+	
+	
 
 	public void sendMessage(PrintWriter out, String message) {
 
