@@ -1,7 +1,6 @@
 package Vuagniaux.SMTPClient;
 
 public class Mail {
-	
 	private String from, to;
 	private String fromInMail, toInMail, cc, subject, message;
 	
@@ -47,6 +46,4 @@ public class Mail {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-
 }
