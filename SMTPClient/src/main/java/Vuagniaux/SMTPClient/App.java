@@ -1,8 +1,11 @@
 package Vuagniaux.SMTPClient;
 
+import Vuagniaux.prankManager.PrankBuilder;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,18 +42,24 @@ public class App {
 	}
 
 	public static void main(String[] args) {
+		/*
+		 * Pas encore testé la classe PrankBuilder.
+		 * Il faut en tout cas compléter le fichier de config et
+		 * vérifier la methode forgeMail car je sais pas quel
+		 * mail mettre dans toSMTP et toInMail.
+		 *
+		 * Mais a part les quelques bugs qu'il va y avoir, tout est la.
+		 */
+		PrankBuilder prank = new PrankBuilder("config.properties", "victimsMails", "prankMessages");
+		List<Mail> forgedMails = prank.getForgedMails();
 
-		Mail mail = new Mail();
-		mail.setFrom("test@test.ch");
-		mail.setTo("haha@haha.ch");
-		mail.setFromInMail("test@test.ch");
-		mail.setToInMail("haha@haha.ch");
-		mail.setSubject("test");
-		mail.setMessage("Prank bro");
-
+		// Y'a pas besoin de creer une Ap ici vu qu'on est dans app, mais j'imagine
+		// que c'était si on foutait le main ailleurs ^^
 		App app = new App();
 
-		app.sendmail("localhost", 25, mail);
+		for(Mail mail : forgedMails) {
+			app.sendmail("localhost", 25, mail);
+		}
 	}
 
 	public int readResponse(BufferedReader in) {

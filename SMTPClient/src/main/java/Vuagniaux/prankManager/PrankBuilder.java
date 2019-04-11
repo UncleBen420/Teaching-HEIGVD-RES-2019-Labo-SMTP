@@ -10,26 +10,23 @@ import java.util.Random;
 /**
  * Definie la structure entiere du prank.
  * Va recuperer un message par groupe, puis creer un mail par personne dans
- * ce groupe avec un message pour finalement fournir une liste
- * de mails a envoyer.
+ * ce groupe avec ce message pour finalement fournir une liste de mails a envoyer.
+ *
  * Puisque tout depend du fichier du configuration qui a ete construit selon
  * les desirs de l'utilisateur, cette classe s'occupe de le lire et fait
- * tout automatiquement.
+ * tout automatiquement. L'utilisateur n'a qu'a recuperer les mails.
  *
  * Il s'agit de la classe que devra recoder l'utilisateur pour utiliser notre
- * application dans un autre cadre que le prank
+ * application dans un autre cadre que le prank.
  */
 public class PrankBuilder {
     private int numberOfGroups, personsPerGroup;
-    private String configFile, victimsMailsFile, fromSMTP, toSMTP, fromInMail;
+    private String fromSMTP, toSMTP, fromInMail;
     private String witnesses;
     private List<Mail> forgedMails;
     private List<String> victimsMails;
 
-    public PrankBuilder(String configFile, String victimsMailFile) {
-        this.configFile = configFile;
-        this.victimsMailsFile = victimsMailFile;
-
+    public PrankBuilder(String configFile, String victimsMailFile, String prankMessagesFile) {
         // On recupere les parametres utiles du fichier de configuration
         Reader reader = new Reader(configFile);
         Properties properties = reader.readProperties();
@@ -42,7 +39,7 @@ public class PrankBuilder {
         fromInMail = properties.getProperty("fromInMail");
 
         // On recupere les mails des victimes depuis le fichier les listant
-        reader.setFileName(victimsMailsFile);
+        reader.setFileName(victimsMailFile);
         victimsMails = reader.lineBufferedReading();
 
         // On teste la validite de la configuration
@@ -54,7 +51,7 @@ public class PrankBuilder {
 
         // On forge les mails
         forgedMails = new ArrayList<>();
-        forgeMails();
+        forgeMails(prankMessagesFile);
     }
 
     // Seul methode disponible a l'utilisateur
@@ -92,8 +89,8 @@ public class PrankBuilder {
      * Dans notre implementation, on prend un message au hasard parmis
      * ceux proposes dans le fichier.
      */
-    private void forgeMails() {
-        Reader reader = new Reader("prankMessages.txt");
+    private void forgeMails(String prankMessageFile) {
+        Reader reader = new Reader(prankMessageFile);
         String[] messages = reader.bufferedReading().split("==");
 
         Random randomGen = new Random();
