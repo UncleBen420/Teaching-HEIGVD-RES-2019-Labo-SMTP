@@ -39,13 +39,13 @@ public class AppTest
     	
     	mail.setFrom("caca@outlook.com");
     	mail.setTo("remy.vuagniaux@heig-vd.ch");
-    	mail.setFromInMail("bobman");
+    	mail.setFromInMail("cacaman");
     	mail.setToInMail("remy.vuagniaux@heig-vd.ch");
     	mail.setCc("gaetan.bacso@heig-vd.ch");
     	mail.setSubject("test");
-    	mail.setMessage("haha");
+    	mail.setMessage("coucou");
     	
-    	temp.sendmail("localhost", 25, mail);
+    	temp.sendmail("localhost", 25000, mail);
     	
         assertTrue( true );
     }
