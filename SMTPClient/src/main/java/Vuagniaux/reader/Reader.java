@@ -182,8 +182,7 @@ public class Reader {
 
         return readData.toString();
     }
-
-
+    
     /**
      * Permet de lire un fichier de proprietes. La lecture est bufferisee.
      *
