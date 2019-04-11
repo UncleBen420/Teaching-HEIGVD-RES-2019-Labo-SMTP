@@ -3,7 +3,14 @@ package Vuagniaux.SMTPClient;
 public class Mail {
 	
 	private String from, to;
-	private String fromInMail, toInMail, subject, message;
+	private String fromInMail, toInMail, cc, subject, message;
+	
+	public String getCc() {
+		return cc;
+	}
+	public void setCc(String cc) {
+		this.cc = cc;
+	}
 	public String getFrom() {
 		return from;
 	}
