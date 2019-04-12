@@ -5,46 +5,52 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * S'occupe de lire le fichier de configuration et de produire une liste de
+ * proprietes
+ */
 public class PropertiesClientSmtp {
-	
 	String cc, address, login, password, separator, subjectBalise, textBalise;
 	int port, nbPersonGroup;
-	
+
+	/**
+	 * Constructeur.
+	 * @param path le chemin du fichier de configuration
+	 */
 	public PropertiesClientSmtp(String path) {
 		Properties properties = setProperties(path);
 		
-		cc 		 	 = properties.getProperty("cc");
-		address  	 = properties.getProperty("address");
-		port 	 	 = Integer.parseInt(properties.getProperty("port"));
-		nbPersonGroup= Integer.parseInt(properties.getProperty("nbPersonGroup"));
-		login 	 	 = properties.getProperty("login");
-		password 	 = properties.getProperty("password");
-		separator	 = properties.getProperty("separator");
-		subjectBalise= properties.getProperty("subjectBalise");
-		textBalise	 = properties.getProperty("textBalise");
-		
-		
+		cc 		 	  = properties.getProperty("cc");
+		address  	  = properties.getProperty("address");
+		port 	 	  = Integer.parseInt(properties.getProperty("port"));
+		nbPersonGroup = Integer.parseInt(properties.getProperty("nbPersonGroup"));
+		login 	 	  = properties.getProperty("login");
+		password 	  = properties.getProperty("password");
+		separator	  = properties.getProperty("separator");
+		subjectBalise = properties.getProperty("subjectBalise");
+		textBalise	  = properties.getProperty("textBalise");
 	}
-	
-	public Properties setProperties(String path) {
+
+	/**
+	 * Cree les proprietes
+	 * @param path le chemin du fichier de configuration
+	 * @return les proprietes lues
+	 */
+	private Properties setProperties(String path) {
 		Properties properties = new Properties();
 		FileReader fr = null;
+
 		try {
 			fr = new FileReader(path);
 			properties.load(fr);
-			
-			
 		} catch (FileNotFoundException e) {
-
 			e.printStackTrace();
-		
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				fr.close();
 			} catch (IOException e) {
-
 				e.printStackTrace();
 			}
 		}
