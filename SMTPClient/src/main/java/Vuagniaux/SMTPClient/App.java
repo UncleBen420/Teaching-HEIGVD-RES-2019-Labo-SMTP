@@ -20,11 +20,20 @@ public class App {
 
 	final static int BUFFER_SIZE = 1024;
 	
+    /**
+     * Constructeur de la classe app a besoin de properties
+     *
+     */
 	public App() {
 		clientSocket = null;
 		properties = new PropertiesClientSmtp("conf.properties");
 	}
 	
+	
+    /**
+     * methode principale
+     *
+     */
 	public static void main(String[] args) {
 		
 
@@ -45,6 +54,11 @@ public class App {
 		
 	}
 
+    /**
+     * Cette methode permet d'envoyer un mail 
+     * 
+     *  @param mail le mail devant etre envoié
+     */
 	public void sendmail(Mail mail) {
 		Socket clientSocket = null;
 		PrintWriter out = null;
@@ -54,13 +68,7 @@ public class App {
 			clientSocket = new Socket(InetAddress.getByName(properties.getAddress()), properties.getPort());
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-			if(readResponse(in) != 220) {
-				throw new IOException("cannot connect");
-			}
-
-			sendMessage(out,"EHLO Prank");
-			
+		
 			dialog(readResponse(in), out, in, mail);
 			
 			
@@ -70,10 +78,18 @@ public class App {
 		}
 	}
 
+
+	/**
+     * lit la reponse du server 
+     * 
+     *  @param in le buffer de lecture de reponse du server
+     *  @return le code de la dernière reponse du server
+     */
 	public int readResponse(BufferedReader in) {
 		String c;
 		int temp = -1;
 		try {
+			// on lit temps que le server n'a pas envoyer un code de fin.
 			while ((c = in.readLine()) != null && (temp = checkCode(c)) < 0) {
 
 				System.out.print(c);
@@ -91,6 +107,13 @@ public class App {
 
 	}
 
+	
+	/**
+     * lit si la ligne correspond a un code de reponse smtp retourne -1 sinon 
+     * 
+     *  @param line a lire
+     *  @return le code de reponse du server
+     */
 	public int checkCode(String line) {
 
 		String[] codeContinue = {"221", "220", "250", "421", "500", "501", "502", "334", "354", "235", "530", "550" };
@@ -102,13 +125,15 @@ public class App {
 			}
 
 		}
-		
-		
-
 		return -1;
 
 	}
 	
+	
+	/**
+     * cette methode permet de faire le dialogue avec le serveur. Il permet d'interagire par exemple si celui ci a besoin d'une authentification
+     * 
+     */
 	public void dialog(int code, PrintWriter out, BufferedReader in, Mail mail) throws IOException {
 		
 		int code2 = 0;
@@ -198,7 +223,13 @@ public class App {
 		dialog(code2, out, in, mail);
 		
 	}
-				
+		
+	
+	/**
+     * Permet de faire une authentification sur un serveur smtp
+     * 
+     *     
+     */
 	public void auth(PrintWriter out, BufferedReader in) throws IOException {
 		
 		sendMessage(out,"AUTH LOGIN");
@@ -225,6 +256,10 @@ public class App {
 	
 	
 
+	/**
+     * ecrit dans le buffer d'ecriture le message puis attends une seconde.
+     * Cela permet d'eviter une erreur de trop d'envoie de mail a la seconde.
+     */
 	public void sendMessage(PrintWriter out, String message) {
 
 		System.out.println(message);
