@@ -79,7 +79,7 @@ public class Reader {
      * on aura donc une seule string par sous-liste.
      */
     public List<List<String>> splittedLinesBufferedReading() {
-        List<List<String>> readData = new ArrayList<>();
+        List<List<String>> readData = new ArrayList<List<String>>();
 
         try {
             String line;
@@ -118,7 +118,7 @@ public class Reader {
      *  @return Les lignes du fichier lu.
      */
     public List<String> lineBufferedReading() {
-        List<String> readData = new ArrayList<>();
+        List<String> readData = new ArrayList<String>();
 
         try {
             String line;
