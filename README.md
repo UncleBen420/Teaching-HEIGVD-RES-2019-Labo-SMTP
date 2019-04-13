@@ -1,6 +1,6 @@
 # Teaching-HEIGVD-RES-2019-Labo-SMTP
 
-##Author Erwan Moreira, Remy Vuagniaux
+## Author Erwan Moreira, Remy Vuagniaux
 
 ## Objectives
 
@@ -66,22 +66,40 @@ This file contains the prank that will be send to the victims. A prank include a
 exemple:
 
 subject: // the subject balise
+
 Dad Jokes // the subject
+
 prank: // the text balise
+
 \1. Did you hear about the restaurant on the moon? Great food, no atmosphere.
+
 \2. What do you call a fake noodle? An Impasta.
+
 \3. How many apples grow on a tree? All of them.
+
 \4. Want to hear a joke about paper? Nevermind it's tearable.
+
 \5. I just watched a program about beavers. It was the best dam program I've ever seen.
+
 Xx420xX // the separator
+
 subject:
+
 Dad Jokes
+
+
 prank:
+
 \1. Why did the coffee file a police report? It got mugged.
+
 \2. How does a penguin build it's house? Igloos it together.
+
 \3. Dad, did you get a haircut? No I got them all cut.
+
 \4. What do you call a Mexican who has lost his car? Carlos.
+
 \5. Dad, can you put my shoes on? No, I don't think they'll fit me
+
 
 ### victims.txt
 
@@ -92,11 +110,17 @@ exemple:
 group of 3:
 
 bob.dilan@gmail.com //sender
+
 henri.des@gmail.com //victim 1
+
 btrvc.fbe@gmail.com //victim 2
+
 ggman@outlook.com //sender of the second group
+
 aa@a.com //victim 1
+
 batman@gmail.com //victim 2
+
 jesus@nazaret.com // need more people to create a third group
 
 ### Test with a mock server
