@@ -37,7 +37,7 @@ public class MailParser {
 
 			try {
 				// On separe le sujet du message lui meme
-				prank.setSubject(s.substring(s.indexOf(properties.getSubjectBalise()) + properties.getSubjectBalise().length(), s.indexOf(properties.getTextBalise())));
+				prank.setSubject(s.substring(s.indexOf(properties.getSubjectBalise()) + properties.getSubjectBalise().length() + System.lineSeparator().length(), s.indexOf(properties.getTextBalise())));
 				prank.setPrank(s.substring(s.indexOf(properties.getTextBalise()) + properties.getTextBalise().length()));
 				
 				pranks.add(prank);

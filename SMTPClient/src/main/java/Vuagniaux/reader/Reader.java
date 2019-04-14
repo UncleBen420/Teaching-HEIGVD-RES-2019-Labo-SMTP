@@ -172,7 +172,7 @@ public class Reader {
 
             // On lit une ligne a la fois et on l'ajoute aux autres lignes
             while ((line = reader.readLine()) != null) {
-                readData.append(line);
+                readData.append(line).append(System.lineSeparator());
             }
 
             reader.close();
